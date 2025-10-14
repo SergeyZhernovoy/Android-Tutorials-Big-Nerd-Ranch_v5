@@ -228,6 +228,11 @@ class CrimeDetailFragment : Fragment() {
             crimeTime.setOnClickListener {
                 findNavController().navigate(CrimeDetailFragmentDirections.selectTime(crime.date))
             }
+            crimePhoto.setOnClickListener {
+                crime.photoFileName?.let {
+                    findNavController().navigate(CrimeDetailFragmentDirections.selectZoomPhoto(it))
+                }
+            }
             updatePhoto(crime.photoFileName)
         }
     }
@@ -273,7 +278,7 @@ class CrimeDetailFragment : Fragment() {
         queryCursor?.use { cursor ->
             if (cursor.moveToFirst()) {
                 val newSuspect = cursor.getString(0)
-                var newPhone: String = ""
+                var newPhone = ""
                 val id = cursor.getString(1)
                 id?.let {
                     val queryPhoneCursor = contentResolver

@@ -25,4 +25,5 @@
     <string name="send_report">Send crime report via</string>
     <string name="call_info">call %s to %s.</string>
     <string name="camera">camera</string>
+    <string name="zoom">zoom</string>
 </resources>
