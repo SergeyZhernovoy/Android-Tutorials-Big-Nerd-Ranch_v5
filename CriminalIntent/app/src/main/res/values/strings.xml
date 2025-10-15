@@ -26,4 +26,7 @@
     <string name="call_info">call %s to %s.</string>
     <string name="camera">camera</string>
     <string name="zoom">zoom</string>
+    <string name="crime_photo_button_description">Take photo of crime scene</string>
+    <string name="crime_photo_no_image_description">Crime scene photo (not set)</string>
+    <string name="crime_photo_image_description">Crime scene photo (set)</string>
 </resources>

@@ -42,13 +42,13 @@ class PhotoZoomFragment: DialogFragment() {
 
     private fun updatePhoto(photoFileName: String?) {
         if (binding.crimeImage.tag != photoFileName) {
-            val photFile = photoFileName?.let {
+            val photoFile = photoFileName?.let {
                 File(requireContext().applicationContext.filesDir, it)
             }
-            if (photFile?.exists() == true) {
+            if (photoFile?.exists() == true) {
                 binding.crimeImage.doOnLayout {  measuredView ->
                     val scaledBitmap = getScalingBitmap(
-                        photFile.path,
+                        photoFile.path,
                         measuredView.width,
                         measuredView.height
                     )

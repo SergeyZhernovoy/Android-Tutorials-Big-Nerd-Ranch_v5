@@ -302,22 +302,24 @@ class CrimeDetailFragment : Fragment() {
 
     private fun updatePhoto(photoFileName: String?) {
         if (binding.crimePhoto.tag != photoFileName) {
-            val photFile = photoFileName?.let {
+            val photoFile = photoFileName?.let {
                 File(requireContext().applicationContext.filesDir, it)
             }
-            if (photFile?.exists() == true) {
+            if (photoFile?.exists() == true) {
                 binding.crimePhoto.doOnLayout {  measuredView ->
                     val scaledBitmap = getScalingBitmap(
-                        photFile.path,
+                        photoFile.path,
                         measuredView.width,
                         measuredView.height
                     )
                     binding.crimePhoto.setImageBitmap(scaledBitmap)
                     binding.crimePhoto.tag = photoFileName
+                    binding.crimePhoto.contentDescription = getString(R.string.crime_photo_image_description)
                 }
             } else {
                 binding.crimePhoto.setImageBitmap(null)
                 binding.crimePhoto.tag = null
+                binding.crimePhoto.contentDescription = getString(R.string.crime_photo_no_image_description)
             }
         }
     }
