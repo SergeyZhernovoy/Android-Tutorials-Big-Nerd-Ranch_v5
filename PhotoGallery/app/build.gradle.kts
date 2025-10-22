@@ -13,8 +13,7 @@ val localPropsFile = rootProject.file("local.properties")
 if (localPropsFile.exists()) {
     props.load(FileInputStream(localPropsFile))
 }
-val clientId: String = System.getenv("CLIENT_ID") ?: props["client_id"] as? String ?: ""
-val clientSecret: String = System.getenv("CLIENT_SECRET") ?: props["client_secret"] as? String ?: ""
+val apiKey: String = System.getenv("API_KEY") ?: props["api_key"] as? String ?: ""
 
 android {
     namespace = "com.learning.photogallery"
@@ -29,8 +28,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "CLIENT_ID", "\"$clientId\"")
-        buildConfigField("String", "CLIENT_SECRET", "\"$clientSecret\"")
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -74,7 +72,9 @@ dependencies {
     implementation(libs.squareup.moshi.kotlin)
     ksp(libs.squareup.moshi.codegen)
     implementation(libs.coil)
-    //KotlinX Serialization
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.common)
+    implementation(libs.squareup.logging.interceptor)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.squareup.okhttp3)
     implementation(libs.kotlinx.coroutines.core)

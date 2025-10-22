@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.learning.photogallery.databinding.ListItemGalleryBinding
 
 class PhotoListAdapter(
-    private val galleryItems: List<GalleryItem>
+    private val galleryItems: List<FreepikImage>
 ) : RecyclerView.Adapter<PhotoViewHolder>() {
 
     override fun onCreateViewHolder(

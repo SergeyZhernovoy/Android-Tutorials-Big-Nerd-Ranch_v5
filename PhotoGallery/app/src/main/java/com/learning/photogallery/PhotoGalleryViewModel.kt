@@ -1,39 +1,26 @@
 package com.learning.photogallery
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 
 private const val TAG = "PhotoGalleryViewModel"
 
 class PhotoGalleryViewModel : ViewModel() {
     private val photoRepository =  PhotoRepository()
 
-    private var token: String? = null
-
-    private val _galleryItems: MutableStateFlow<List<GalleryItem>> =
-        MutableStateFlow(emptyList())
-
-    val galleryItems: StateFlow<List<GalleryItem>>
-        get() = _galleryItems.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            try {
-                if (token == null) {
-                    token = photoRepository.token()
-                }
-                Log.d(TAG, "token : $token")
-                val items = photoRepository.fetchContent(token!!)
-                Log.d(TAG, "Items received: $items")
-                _galleryItems.value = items
-            } catch (ex: Exception) {
-                Log.e(TAG, "Failed to fetch gallery items ${ex.message}", ex)
-            }
-        }
+    val pagingDataFlow: Flow<PagingData<FreepikImage>> = kotlinx.coroutines.flow.flow {
+        emitAll(
+            Pager(
+                config = PagingConfig(pageSize = 10),
+                pagingSourceFactory = { PhotoPagingSource(photoRepository) }
+            ).flow.cachedIn(viewModelScope)
+        )
     }
+
 }
