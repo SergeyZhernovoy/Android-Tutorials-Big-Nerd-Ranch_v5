@@ -6,21 +6,77 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 private const val TAG = "PhotoGalleryViewModel"
+private const val DEFAULT_QUERY = "cat"
 
 class PhotoGalleryViewModel : ViewModel() {
     private val photoRepository =  PhotoRepository()
+    private val preferencesRepository = PreferencesRepository.get()
 
-    val pagingDataFlow: Flow<PagingData<FreepikImage>> = kotlinx.coroutines.flow.flow {
-        emitAll(
-            Pager(
-                config = PagingConfig(pageSize = 10),
-                pagingSourceFactory = { PhotoPagingSource(photoRepository) }
-            ).flow.cachedIn(viewModelScope)
-        )
+    private val queryState = MutableStateFlow("")
+
+    init {
+        viewModelScope.launch {
+            preferencesRepository.storedQuery.collectLatest { q ->
+                queryState.value = q.ifBlank { DEFAULT_QUERY }
+            }
+        }
     }
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val uiState: StateFlow<PhotoGalleryUiState> =
+        queryState
+            .debounce(300)
+            .distinctUntilChanged()
+            .map { raw ->
+                val q = raw.ifBlank { DEFAULT_QUERY }
+                PhotoGalleryUiState(
+                    query = q,
+                    pagingDataFlow = pagerFlowFor(q)
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = PhotoGalleryUiState(
+                    query = "",
+                    pagingDataFlow = pagerFlowFor(DEFAULT_QUERY)
+                )
+            )
+
+    private fun pagerFlowFor(q: String): Flow<PagingData<FreepikImage>> =
+        Pager(
+            initialKey = 1,
+            config = PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                prefetchDistance = 5
+            ),
+            pagingSourceFactory = { PhotoPagingSource(photoRepository, q) }
+        )
+            .flow
+            .cachedIn(viewModelScope)
+
+    fun setQuery(query: String) {
+        val normalized = query.ifBlank { DEFAULT_QUERY }
+        queryState.value = normalized
+        viewModelScope.launch {
+            preferencesRepository.setStoredQuery(normalized)
+        }
+    }
+
 
 }

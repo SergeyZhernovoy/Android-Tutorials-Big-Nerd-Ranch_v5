@@ -9,7 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 
-
 class PhotoRepository {
     private val freepikApi: FreepikApi
 
@@ -29,6 +28,7 @@ class PhotoRepository {
                     .build()
                 chain.proceed(request)
             }
+            .addInterceptor(PhotoInterceptor())
             .build()
 
         val retrofit: Retrofit = Retrofit.Builder()

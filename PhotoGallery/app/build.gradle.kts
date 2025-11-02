@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.squareup.moshi)
     implementation(libs.squareup.moshi.kotlin)
     ksp(libs.squareup.moshi.codegen)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.coil)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.common)

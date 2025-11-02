@@ -5,14 +5,15 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
 class PhotoPagingSource(
-    private val repository: PhotoRepository
+    private val repository: PhotoRepository,
+    private val query: String
 ) : PagingSource<Int, FreepikImage>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, FreepikImage> {
         val page = params.key ?: 1
         Log.d("PhotoPagingSource", "loading page: $page")
         try {
-            val items = repository.fetchContentPaged(page, params.loadSize, query = "cat")
+            val items = repository.fetchContentPaged(page, params.loadSize, query = query)
             Log.d("PhotoPagingSource", "items.size: ${items.size}")
             return LoadResult.Page(
                 data = items,
