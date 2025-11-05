@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,16 @@ class PreferencesRepository private constructor(
         preferences[SEARCH_QUERY_KEY] ?: ""
     }.distinctUntilChanged()
 
+    val lastResultId: Flow<Long> = dataStore.data.map {
+        it[PREF_LAST_RESULT_ID] ?: -1
+    }.distinctUntilChanged()
+
+    suspend fun setLastResultId(lastResultId: Long) {
+        dataStore.edit {
+            it[PREF_LAST_RESULT_ID] = lastResultId
+        }
+    }
+
     suspend fun setStoredQuery(query: String) {
         dataStore.edit {
             it[SEARCH_QUERY_KEY] = query
@@ -28,6 +39,7 @@ class PreferencesRepository private constructor(
     companion object {
         private val SEARCH_QUERY_KEY = stringPreferencesKey("search_query")
         private var INSTANCE: PreferencesRepository? = null
+        private val PREF_LAST_RESULT_ID = longPreferencesKey("last_result_id")
 
         fun initialize(context: Context) {
             if (INSTANCE == null) {
