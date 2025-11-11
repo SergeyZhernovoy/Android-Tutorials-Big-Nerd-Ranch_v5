@@ -28,9 +28,7 @@ class PhotoPageFragment: Fragment() {
             false
         )
         binding.apply {
-
             progressBar.max = 100
-
             webView.apply {
                 settings.javaScriptEnabled = true
                 webViewClient = WebViewClient()
