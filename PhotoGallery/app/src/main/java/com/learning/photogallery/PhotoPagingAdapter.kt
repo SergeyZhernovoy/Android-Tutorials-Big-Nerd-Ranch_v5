@@ -1,12 +1,15 @@
 package com.learning.photogallery
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.learning.photogallery.databinding.ListItemGalleryBinding
 
-class PhotoPagingAdapter :
+class PhotoPagingAdapter(
+    private val onItemClicked: (Uri) -> Unit
+) :
     PagingDataAdapter<FreepikImage, PhotoViewHolder>(GalleryItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -16,7 +19,7 @@ class PhotoPagingAdapter :
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        getItem(position)?.let { holder.bind(it, onItemClicked) }
     }
 
 }

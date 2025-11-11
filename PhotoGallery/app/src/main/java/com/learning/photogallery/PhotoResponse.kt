@@ -1,5 +1,7 @@
 package com.learning.photogallery
 
+import android.net.Uri
+import androidx.core.net.toUri
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -22,7 +24,13 @@ data class FreepikImage(
     @Json(name = "related") val related: FreepikRelated?,
     @Json(name = "stats") val stats: FreepikStats?,
     @Json(name = "author") val author: FreepikAuthor?
-)
+) {
+    val photoPageUri: Uri
+        get() = image?.source?.url?.toUri() ?: Uri.EMPTY
+            .buildUpon()
+            .appendPath(id.toString())
+            .build()
+}
 
 @JsonClass(generateAdapter = true)
 data class FreepikLicense(

@@ -1,12 +1,14 @@
 package com.learning.photogallery
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.learning.photogallery.databinding.ListItemGalleryBinding
 
 class PhotoListAdapter(
-    private val galleryItems: List<FreepikImage>
+    private val galleryItems: List<FreepikImage>,
+    private val onItemClicked: (Uri) -> Unit
 ) : RecyclerView.Adapter<PhotoViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -23,7 +25,7 @@ class PhotoListAdapter(
         position: Int
     ) {
         val item = galleryItems[position]
-        holder.bind(item)
+        holder.bind(item, onItemClicked)
     }
 
     override fun getItemCount(): Int = galleryItems.size

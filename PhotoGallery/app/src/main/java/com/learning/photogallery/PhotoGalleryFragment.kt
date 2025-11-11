@@ -1,5 +1,7 @@
 package com.learning.photogallery
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +11,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -16,6 +21,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -48,7 +54,21 @@ class PhotoGalleryFragment : Fragment() {
 
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
 
-    private val adapter = PhotoPagingAdapter()
+    private val adapter = PhotoPagingAdapter {
+        photoPageUri ->
+        val tabCustomTabColorSchemeParams = CustomTabColorSchemeParams.Builder()
+            .setToolbarColor(ContextCompat.getColor(requireContext(),
+                com.google.android.material.R.color.design_default_color_primary))
+            .build()
+        CustomTabsIntent.Builder()
+            .setDefaultColorSchemeParams(tabCustomTabColorSchemeParams)
+            .setShowTitle(true)
+            .build()
+            .launchUrl(requireContext(), photoPageUri)
+//        findNavController().navigate(
+//            PhotoGalleryFragmentDirections.showPhoto(photoPageUri)
+//        )
+    }
 
     private var searchView: SearchView? = null
     private var pollingMenuItem: MenuItem? = null

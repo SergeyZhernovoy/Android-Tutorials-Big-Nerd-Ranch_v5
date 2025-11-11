@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.serialization)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.navigation.safeargs)
 }
 
 val props = Properties()
@@ -81,6 +82,7 @@ dependencies {
     implementation(libs.squareup.okhttp3)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.browser)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
