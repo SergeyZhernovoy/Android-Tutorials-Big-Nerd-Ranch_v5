@@ -1,6 +1,5 @@
 package com.learning.codapizza.ui
 
-import android.icu.number.NumberFormatter
 import android.icu.text.NumberFormat
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,11 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
@@ -24,15 +23,13 @@ import androidx.compose.ui.unit.dp
 import com.learning.codapizza.R
 import com.learning.codapizza.model.Pizza
 import com.learning.codapizza.model.Topping
-import com.learning.codapizza.model.ToppingPlacement
 
-@Preview
 @Composable
 fun PizzaBuilderScreen(
+    pizzaMain: Pizza,
     modifier: Modifier = Modifier
 ) {
-
-    var pizza by rememberSaveable { mutableStateOf(Pizza()) }
+    var pizza by rememberSaveable { mutableStateOf(pizzaMain) }
 
     Column(modifier = modifier) {
         ToppingList(
@@ -51,13 +48,26 @@ fun PizzaBuilderScreen(
     }
 }
 
-
 @Composable
 private fun ToppingList(
     pizza: Pizza,
     onEditPizza: (Pizza) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var toppingBeingAdded by rememberSaveable { mutableStateOf<Topping?>(null) }
+
+    toppingBeingAdded?.let { topping ->
+        ToppingPlacementDialog(
+            topping = topping,
+            onSetToppingPlacement = { placement ->
+                onEditPizza(pizza.withTopping(topping, placement))
+            },
+            onDismissRequest = {
+                toppingBeingAdded = null
+            }
+        )
+
+    }
     LazyColumn(modifier = modifier) {
         items(Topping.entries.toTypedArray()) { topping ->
              ToppingCell(
@@ -65,15 +75,7 @@ private fun ToppingList(
                 placement = pizza.toppings[topping],
                 modifier = modifier,
                 onClickTopping = {
-                    val isOnPizza = pizza.toppings[topping] != null
-                    onEditPizza(pizza.withTopping(
-                        topping = topping,
-                        placement = if (isOnPizza) {
-                            null
-                        } else {
-                            ToppingPlacement.All
-                        }
-                    ))
+                    toppingBeingAdded = topping
                 }
             )
         }
@@ -93,7 +95,6 @@ private fun OrderButton(
     ) {
         val currencyFormatter = remember { NumberFormat.getCurrencyInstance() }
         val price = currencyFormatter.format(pizza.price)
-
 
         Text(
             text = stringResource(R.string.place_order_button, price)
