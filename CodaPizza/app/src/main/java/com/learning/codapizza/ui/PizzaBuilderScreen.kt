@@ -29,7 +29,6 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import com.learning.codapizza.R
 import com.learning.codapizza.model.Pizza
-import com.learning.codapizza.model.PizzaSize
 import com.learning.codapizza.model.Topping
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +37,6 @@ fun PizzaBuilderScreen(
     modifier: Modifier = Modifier
 ) {
     var pizza by rememberSaveable { mutableStateOf(Pizza()) }
-    var pizzaSize by rememberSaveable { mutableStateOf(PizzaSize.Medium) }
 
     Column(modifier = modifier) {
         TopAppBar(
