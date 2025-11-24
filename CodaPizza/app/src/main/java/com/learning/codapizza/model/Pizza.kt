@@ -27,4 +27,13 @@ data class Pizza(
             }
         )
     }
+
+    fun withSize(pizzaSize: PizzaSize?): Pizza {
+        return if (pizzaSize != null) {
+            copy(
+                size = pizzaSize
+            )
+        } else this
+    }
+
 }

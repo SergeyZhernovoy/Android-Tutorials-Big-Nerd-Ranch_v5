@@ -33,33 +33,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodaPizzaTheme {
-
-                var pizza by rememberSaveable { mutableStateOf(Pizza()) }
-
                 Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                titleContentColor = MaterialTheme.colorScheme.primary,
-                            ),
-                            title = {
-                                Text("Test menu")
-                            },
-                            actions = {
-                                IconButton(onClick = { }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Menu,
-                                        contentDescription = "Localized description"
-                                    )
-                                    PizzaSizeDropDownDialog(pizza = pizza)
-                                }
-                            }
-                        )
-                    },
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    PizzaBuilderScreen(pizzaMain = pizza,
+                    PizzaBuilderScreen(
                         modifier = Modifier.padding(innerPadding))
                 }
             }

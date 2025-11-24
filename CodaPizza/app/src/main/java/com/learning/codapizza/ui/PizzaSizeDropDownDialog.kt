@@ -22,6 +22,8 @@ import com.learning.codapizza.model.PizzaSize
 @Composable
 fun PizzaSizeDropDownDialog(
     pizza: Pizza,
+    onEditPizza: (Pizza) -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -29,37 +31,34 @@ fun PizzaSizeDropDownDialog(
         IconButton(onClick = { expanded = !expanded }) {}
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-
-            }
+            onDismissRequest = onDismissRequest
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.pizza_small_size)) },
                 onClick = {
                     expanded = false
-                    pizza.size = PizzaSize.Small
+                    onEditPizza(pizza.withSize(PizzaSize.Small))
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.pizza_medium_size)) },
                 onClick = {
                     expanded = false
-                    pizza.size = PizzaSize.Medium
+                    onEditPizza(pizza.withSize(PizzaSize.Medium))
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.pizza_large_size)) },
                 onClick = {
                     expanded = false
-                    pizza.size = PizzaSize.Large
+                    onEditPizza(pizza.withSize(PizzaSize.Large))
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.pizza_extra_size)) },
                 onClick = {
                     expanded = false
-                    pizza.size = PizzaSize.Extra
+                    onEditPizza(pizza.withSize(PizzaSize.Extra))
                 }
             )
         }
