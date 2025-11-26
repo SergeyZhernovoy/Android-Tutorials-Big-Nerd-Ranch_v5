@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.learning.codapizza.ui.PizzaBuilderScreen
+import com.learning.codapizza.ui.theme.AppTheme
 import com.learning.codapizza.ui.theme.CodaPizzaTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,14 +19,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CodaPizzaTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    PizzaBuilderScreen(
-                        modifier = Modifier.padding(innerPadding))
+            AppTheme {
+//                Scaffold(
+//                    //modifier = Modifier.fillMaxSize()
+//                ) { innerPadding ->
+                    PizzaBuilderScreen()
                 }
-            }
+            //}
         }
     }
 }
